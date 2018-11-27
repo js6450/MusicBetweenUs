@@ -10,7 +10,7 @@ let ipAddr = "10.17.99.119";
 
 let values = [];
 
-let aPath = "assets/audio/";
+let audioRoot = "assets/audio/";
 
 function preload(){
     /*
@@ -18,7 +18,7 @@ function preload(){
     1: tick
      */
     for(let i = 0; i < beatsTotal; i++){
-        beats[i] = loadSound(aPath + "b" + i + ".mp3");
+        beats.push(new AudioNode("b" + i));
     }
 
     /*
@@ -28,20 +28,13 @@ function preload(){
     3: GB
      */
 
-    // for(let i = 0; i < soundTotal; i++){
-    //     sounds[i] = loadSound(aPath + "s" + i + ".mp3");
-    // }
-    //
-    sounds[0] = loadSound(aPath + "s0.mp3");
-    sounds[1] = loadSound(aPath + "s2.mp3");
-    sounds[2] = loadSound(aPath + "s7.mp3");
-    sounds[3] = loadSound(aPath + "s10.mp3");
+    for(let i = 0; i < soundTotal; i++){
+        sounds.push(new AudioNode("s" + i));
+    }
 
 }
 
 function setup(){
-
-
 
     serial = new p5.SerialPort(ipAddr);
 
@@ -56,33 +49,40 @@ function setup(){
 
     createCanvas(windowWidth, windowHeight);
 
+    beats[0].loop();
+    beats[1].loop();
+
 }
 
 function draw(){
 
-    if(!beats[0].isPlaying()){
-        beats[0].loop();
+    beats[0].play();
+    //beats[1].play();
+
+    for(let i = 0; i < 4; i++){
+        playNote(i, i);
     }
 
-    // for(let i = 0; i < values.length; i++){
-    //     if(values[i] == 1){
-    //         console.log(i)
-    //
-    //         if(!sounds[i].isPlaying()){
-    //             sounds[i].play();
-    //         }
-    //     }else{
-    //         if(sounds[i].isPlaying() && sounds[i].getVolume() > 0){
-    //             let currentVol = sounds[i].getVolume();
-    //             sounds[i].setVolume(currentVol - 0.1);
-    //         }
-    //     }
-    // }
+    let numPlaying = 0;
 
-    playNote(2, 0);
-    playNote(4, 1);
-    playNote(7, 2);
-    playNote(10, 3);
+    for(let i = 0; i < sounds.length; i++){
+        //console.log(i + ": " + sounds[i].playing);
+        if(sounds[i].playing){
+            numPlaying++;
+        }else{
+
+        }
+    }
+
+    //console.log(numPlaying);
+
+    // if(numPlaying > 2){
+    //     console.log("play new beats");
+    //     beats[1].play();
+    // }else{
+    //     beats[1].easeVolume(0, 0.5);
+    //     beats[1].stop();
+    // }
 
 }
 
@@ -92,22 +92,17 @@ function playNote(vIndex, sIndex){
 
     if(values[vIndex] == 1){
         //console.log(vIndex);
-
-        if(!s.isPlaying()){
-            s.play();
-        }else{
-            if(s.currentTime() > 6){
-                s.jump(0);
-            }
+        if(s.getVolume() < 0.5){
+            s.easeVolume(1, 0.5);
         }
+
+        s.play();
+        s.jump(1, 4);
+
     }else{
-        if(s.isPlaying){
-            if(s.getVolume() > 0.1){
-                s.setVolume(s.getVolume() - 0.01);
-            }else{
-                s.stop();
-                s.setVolume(1);
-            }
+        s.easeVolume(0, 1);
+        if(s.getVolume() < 0.1){
+            s.stop();
         }
     }
 }
