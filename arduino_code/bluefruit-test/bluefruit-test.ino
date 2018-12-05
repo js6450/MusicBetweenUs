@@ -37,14 +37,10 @@ void setup(void)
 {
   while (!Serial);  // required for Flora & Micro
 
-  
-
   if (!cap.begin(0x5A)) {
     Serial.println("MPR121 not found, check wiring?");
     while (1);
   }
-
-  
 
   Serial.println("MPR121 found!");
   delay(500);
@@ -77,10 +73,10 @@ void setup(void)
   Serial.println("Requesting Bluefruit info:");
   /* Print Bluefruit information */
   ble.info();
-
-  Serial.println(F("Please use Adafruit Bluefruit LE app to connect in UART mode"));
-  Serial.println(F("Then Enter characters to send to Bluefruit"));
-  Serial.println();
+//
+//  Serial.println(F("Please use Adafruit Bluefruit LE app to connect in UART mode"));
+//  Serial.println(F("Then Enter characters to send to Bluefruit"));
+//  Serial.println();
 
   ble.verbose(false);  // debug info is a little annoying after this point!
 
@@ -116,6 +112,8 @@ void loop(void)
 //  ble.println("a");
 //  delay(1000);
 
+//ble.println('a');
+
    currtouched = cap.touched();
 
   for (uint8_t i = 0; i < 12; i++) {
@@ -123,20 +121,19 @@ void loop(void)
 
     if (currtouched & _BV(i)) {
      // Serial.print(1);
-      ble.print(1);
+      ble.print(i);
     } else {
     //  Serial.print(0);
-      ble.print(0);
+      //ble.print(0);
     }
     if (i < 11) {
       //Serial.print(",");
     }
   }
-  ble.print("a");
+  //ble.print("a");
 
   lasttouched = currtouched;
-
-  return;
   
-  //delay(50);
+  
+  delay(50);
 }

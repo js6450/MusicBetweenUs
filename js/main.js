@@ -1,137 +1,112 @@
-let soundTotal = 4;
+let audioRoot = 'assets/audio/';
+
+let soundTotal = 8;
 let sounds = [];
 
-let beatsTotal = 2;
+let beatsTotal = 3;
 let beats = [];
 
-let serial;
-let portName = "/dev/cu.usbmodem14601";
-let ipAddr = "10.17.99.119";
+let audioDiv;
 
-let values = [];
+let mainBeat;
 
-let audioRoot = "assets/audio/";
+window.onload = () => {
 
-function preload(){
-    /*
-    0: beat
-    1: tick
-     */
+    console.log('window loaded');
+
+    // audioDiv = document.getElementById('audioDiv');
+    //
+    // for(let i = 0; i < numBeats; i++){
+    //     let audioTag = document.createElement('audio');
+    //     audioTag.id = 'b' + i;
+    //     audioTag.src = audioRoot + 'b' + i + '.mp3';
+    //
+    //     audioDiv.appendChild(audioTag);
+    // }
+
     for(let i = 0; i < beatsTotal; i++){
         beats.push(new AudioNode("b" + i));
     }
 
-    /*
-    0: CG
-    1: EG
-    2: DG
-    3: GB
-     */
+
+    // mainBeat = document.getElementById('b0');
+    // mainBeat.loop = true;
+
+    // for(let i = 0; i < numMelodies; i++){
+    //     let audioTag = document.createElement('audio');
+    //     audioTag.id = 's' + i;
+    //     audioTag.src = audioRoot + 's' + i + '.mp3';
+    //
+    //     audioDiv.appendChild(audioTag);
+    // }
 
     for(let i = 0; i < soundTotal; i++){
         sounds.push(new AudioNode("s" + i));
     }
+};
 
-}
-
-function setup(){
-
-    serial = new p5.SerialPort(ipAddr);
-
-    serial.on('list', printList);
-    serial.on('connected', serverConnected);
-    serial.on('open', portOpen);
-    serial.on('data', serialEvent);
-    serial.on('error', serialError);
-    serial.on('close', portClose);
-
-    serial.open(portName);
-
-    createCanvas(windowWidth, windowHeight);
-
+function startAudio(){
     beats[0].loop();
-    beats[1].loop();
-
+    beats[0].play();
+    //
 }
 
-function draw(){
+function triggerSound(data){
 
-    beats[0].play();
-    //beats[1].play();
+    console.log('incoming', data);
 
-    for(let i = 0; i < 4; i++){
-        playNote(i, i);
+    let totalPlaying = 0;
+
+    for(let i = 0; i < data.length; i++){
+        let currentData = parseInt(data[i]);
+
+        if(currentData < soundTotal){
+            console.log('currentData', currentData);
+            let currentAudio = sounds[currentData];
+            currentAudio.play();
+            currentAudio.jump(0, 5);
+
+            // if(currentAudio.currentTime > 5){
+            //     currentAudio.currentTime = 0;
+            // }
+
+            //currentAudio.play();
+
+        }
+
+        // if(i < numMelodies){
+        //     let currentAudio = document.getElementById('s' + i);
+        //     let currentData = data[i];
+        //     if(currentData == int(String.fromCharCode(value.getUint8(i)))){
+        //         currentAudio.play();
+        //     }else{
+        //         currentAudio.pause();
+        //     }
+        //}
     }
 
-    let numPlaying = 0;
 
     for(let i = 0; i < sounds.length; i++){
-        //console.log(i + ": " + sounds[i].playing);
         if(sounds[i].playing){
-            numPlaying++;
-        }else{
-
+            totalPlaying++;
         }
     }
 
-    //console.log(numPlaying);
-
-    // if(numPlaying > 2){
-    //     console.log("play new beats");
-    //     beats[1].play();
-    // }else{
-    //     beats[1].easeVolume(0, 0.5);
-    //     beats[1].stop();
-    // }
-
-}
-
-function playNote(vIndex, sIndex){
-    let s = sounds[sIndex];
-    console.log(vIndex);
-
-    if(values[vIndex] == 1){
-        //console.log(vIndex);
-        if(s.getVolume() < 0.5){
-            s.easeVolume(1, 0.5);
+    if(totalPlaying < 2){
+        for(let i  = 1; i < beatsTotal; i++){
+            beats[i].stop();
         }
-
-        s.play();
-        s.jump(1, 4);
-
     }else{
-        s.easeVolume(0, 1);
-        if(s.getVolume() < 0.1){
-            s.stop();
+        if(totalPlaying >= 2){
+            beats[1].loop();
+            beats[1].play();
+        }
+
+        if(totalPlaying >= 4){
+            beats[2].loop();
+            beats[2].play();
         }
     }
-}
 
-function printList(ports){
-    console.log(ports);
-}
-
-function serverConnected() {
-    console.log('connected to server.');
-}
-
-function portOpen() {
-    console.log('the serial port opened.')
-}
-
-function serialEvent() {
-    let dataIn = serial.readLine();
-    //console.log(dataIn);
-
-    if(dataIn != ""){
-        values = int(dataIn.split(","));
-    }
-}
-
-function serialError(err) {
-    console.log('Something went wrong with the serial port. ' + err);
-}
-
-function portClose() {
-    console.log('The serial port closed.');
+    console.log("total playing", totalPlaying);
 }
