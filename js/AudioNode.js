@@ -5,10 +5,15 @@ class AudioNode{
 
         this.audioElement = document.createElement('audio');
         this.audioElement.id = fileName;
+        this.audioId = fileName;
 
         document.body.appendChild(this.audioElement);
 
         this.audioElement.src = audioRoot + fileName + ".mp3";
+
+        this.audioElement.onpause = function(){
+            this.playing = false;
+        };
 
         this.audioSource = this.audioCtx.createMediaElementSource(this.audioElement);
 
@@ -22,17 +27,29 @@ class AudioNode{
         this.pannerNode.connect(this.gainNode);
         this.gainNode.connect(this.audioCtx.destination);
 
-        this.playing = false;
+       // this.playing = false;
     }
 
 
     async play(){
         try{
             await this.audioElement.play();
-            this.playing = true;
+           // this.playing = true;
         }catch(err){
             console.log(err);
         }
+    }
+
+    playing(){
+        return ! document.getElementById(this.audioId).paused;
+    }
+
+    currentTime(){
+        return document.getElementById(this.audioId).currentTime;
+    }
+
+    duration(){
+        return document.getElementById(this.audioId).duration;
     }
 
     pause(){
@@ -43,14 +60,14 @@ class AudioNode{
     stop(){
         this.audioElement.pause();
         this.audioElement.currentTime = 0;
-        this.playing = false;
+       // this.playing = false;
     }
 
     stopAt(time){
 
         this.audioElement.pause();
         this.audioElement.currentTime = 0;
-        this.playing = false;
+        //this.playing = false;
     }
 
     loop(){
@@ -64,11 +81,11 @@ class AudioNode{
     jump(start, end){
 
         if(this.audioElement.currentTime > end - 0.5){
-            this.easeVolume(0, 0.5);
+          //  this.easeVolume(0, 0.5);
         }
 
         if(this.audioElement.currentTime > end){
-            this.easeVolume(1, 0.5);
+           // this.easeVolume(1, 0.5);
             this.audioElement.currentTime = start;
         }
     }

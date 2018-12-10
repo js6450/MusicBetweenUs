@@ -1,112 +1,104 @@
 let audioRoot = 'assets/audio/';
+let audioLoaded = false;
 
-let soundTotal = 8;
-let sounds = [];
+let melodiesTotal = 16;
+let melodies = [];
 
-let beatsTotal = 3;
+let beatsTotal = 5;
 let beats = [];
 
-let audioDiv;
+function loadSound(){
 
-let mainBeat;
-
-window.onload = () => {
-
-    console.log('window loaded');
-
-    // audioDiv = document.getElementById('audioDiv');
-    //
-    // for(let i = 0; i < numBeats; i++){
-    //     let audioTag = document.createElement('audio');
-    //     audioTag.id = 'b' + i;
-    //     audioTag.src = audioRoot + 'b' + i + '.mp3';
-    //
-    //     audioDiv.appendChild(audioTag);
-    // }
+    console.log('Sound files loaded');
 
     for(let i = 0; i < beatsTotal; i++){
         beats.push(new AudioNode("b" + i));
     }
 
-
-    // mainBeat = document.getElementById('b0');
-    // mainBeat.loop = true;
-
-    // for(let i = 0; i < numMelodies; i++){
-    //     let audioTag = document.createElement('audio');
-    //     audioTag.id = 's' + i;
-    //     audioTag.src = audioRoot + 's' + i + '.mp3';
-    //
-    //     audioDiv.appendChild(audioTag);
-    // }
-
-    for(let i = 0; i < soundTotal; i++){
-        sounds.push(new AudioNode("s" + i));
+    for(let i = 0; i < melodiesTotal; i++){
+        melodies.push(new AudioNode("m" + i));
     }
-};
 
-function startAudio(){
-    beats[0].loop();
-    beats[0].play();
-    //
+    audioLoaded = true;
 }
 
-function triggerSound(data){
+let totalPlaying = 0;
 
-    console.log('incoming', data);
+function startAudio(){
 
-    let totalPlaying = 0;
+    loadSound();
 
-    for(let i = 0; i < data.length; i++){
-        let currentData = parseInt(data[i]);
-
-        if(currentData < soundTotal){
-            console.log('currentData', currentData);
-            let currentAudio = sounds[currentData];
-            currentAudio.play();
-            currentAudio.jump(0, 5);
-
-            // if(currentAudio.currentTime > 5){
-            //     currentAudio.currentTime = 0;
-            // }
-
-            //currentAudio.play();
-
-        }
-
-        // if(i < numMelodies){
-        //     let currentAudio = document.getElementById('s' + i);
-        //     let currentData = data[i];
-        //     if(currentData == int(String.fromCharCode(value.getUint8(i)))){
-        //         currentAudio.play();
-        //     }else{
-        //         currentAudio.pause();
+    setInterval(function(){
+        beats[0].play();
+        // if(devices != null){
+        //     for(let i = 0; i < devices.length; i++){
+        //         console.log("in set interval", devices[i].dataIn);
+        //         triggerSound(devices[i].id, devices[i].dataIn);
         //     }
-        //}
+        // }
+
+        totalPlaying = 0;
+
+        for(let i = 0; i < melodies.length; i++){
+            if(melodies[i].playing()){
+                totalPlaying++;
+            }
+        }
+
+        console.log("totalPlaying", totalPlaying);
+
+        if(totalPlaying < 2){
+            for(let i  = 1; i < beatsTotal; i++){
+                beats[i].stop();
+            }
+        }else{
+            console.log("trigger another beat");
+            for(let i = 1; i < beatsTotal; i++){
+                if(totalPlaying > i){
+                    console.log("beat ", i);
+                    beats[i].play();
+                }
+            }
+        }
+    }, 2000);
+
+}
+
+function triggerSound(id, data){
+
+    if(data != null){
+        //console.log('id', id);
+        console.log('incoming from ' + id + ": " + data);
+
+        for(let i = 0; i < data.length; i++){
+            let currentData = parseInt(data[i]) * 2 + id;
+
+            if(currentData < melodiesTotal){
+                //console.log('currentData', currentData * 2 + parseInt(id));
+                let currentAudio = melodies[currentData];
+
+                if(!currentAudio.playing()){
+                    currentAudio.play();
+                }else{
+                    if(currentData >= 12){
+                        currentAudio.jump(1, currentAudio.duration() - 1);
+                    }
+
+                    currentAudio.jump(0, currentAudio.duration());
+                }
+                // currentAudio.jump(0, 5);
+
+                // if(currentAudio.currentTime > 5){
+                //     currentAudio.currentTime = 0;
+                // }
+
+                //currentAudio.play();
+
+            }
+        }
+
+        devices[id].dataIn = [];
     }
 
 
-    for(let i = 0; i < sounds.length; i++){
-        if(sounds[i].playing){
-            totalPlaying++;
-        }
-    }
-
-    if(totalPlaying < 2){
-        for(let i  = 1; i < beatsTotal; i++){
-            beats[i].stop();
-        }
-    }else{
-        if(totalPlaying >= 2){
-            beats[1].loop();
-            beats[1].play();
-        }
-
-        if(totalPlaying >= 4){
-            beats[2].loop();
-            beats[2].play();
-        }
-    }
-
-    console.log("total playing", totalPlaying);
 }
