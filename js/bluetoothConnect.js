@@ -30,7 +30,7 @@ class BluetoothDevice{
 		this.msgDiv = document.createElement('DIV');
 		this.msgDivID = this.id;
 		this.msgDiv.id = this.msgDivID;
-		document.body.appendChild(this.msgDiv);
+		document.getElementById('bluetooth-msg').append(this.msgDiv);
 
         this.makeConnection();
 

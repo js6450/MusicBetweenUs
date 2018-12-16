@@ -31,6 +31,15 @@ function loadSound(){
 
     for(let i = 0; i < melodiesTotal; i++){
         melodies.push(new AudioNode("m" + i));
+
+        let visDiv = document.createElement('DIV');
+        visDiv.id = i;
+        visDiv.setAttribute('class', 'sensor-div');
+        if(i % 2 == 0){
+            document.getElementById('visualizer-01').append(visDiv);
+        }else{
+            document.getElementById('visualizer-02').append(visDiv);
+        }
     }
 
     audioLoaded = true;
@@ -59,7 +68,9 @@ function startAudio(){
             }
         }
 
-        console.log("totalPlaying", totalPlaying);
+        //console.log("totalPlaying", totalPlaying);
+
+        let beatsPlaying = "Current beats: 0";
 
         if(totalPlaying < 2){
             for(let i  = 1; i < beatsTotal; i++){
@@ -69,11 +80,14 @@ function startAudio(){
             console.log("trigger another beat");
             for(let i = 1; i < beatsTotal; i++){
                 if(totalPlaying > i){
-                    console.log("beat ", i);
+                    // console.log("beat ", i);
+                    beatsPlaying += ", " + i;
                     beats[i].play();
                 }
             }
         }
+
+        document.getElementById('beats-playing').innerHTML = beatsPlaying;
     }, 2000);
 
 }
@@ -82,7 +96,15 @@ function triggerSound(id, data){
 
     if(data != null){
         //console.log('id', id);
-        console.log('incoming from ' + id + ": " + data);
+        // console.log('incoming from ' + id + ": " + data);
+
+        for(let i = 0; i < melodies.length; i++){
+            if(melodies[i].playing()){
+                document.getElementById(i).setAttribute('class', 'sensor-div active');
+            }else{
+                document.getElementById(i).setAttribute('class', 'sensor-div');
+            }
+        }
 
         for(let i = 0; i < data.length; i++){
             /*
@@ -104,12 +126,14 @@ function triggerSound(id, data){
                     if(currentData >= 12){
                         currentAudio.jump(1, currentAudio.duration() - 1);
                     }
-
                     currentAudio.jump(0, currentAudio.duration());
                 }
 
+
             }
         }
+
+
 
         devices[id].dataIn = [];
     }

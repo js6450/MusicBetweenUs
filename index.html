@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="js/lib/p5.min.js"></script>
-    <script src="js/lib/p5.serialport.js"></script>
-    <script src="js/lib/p5.sound.min.js"></script>
+    <!--<script src="js/lib/p5.serialport.js"></script>-->
+    <!--<script src="js/lib/p5.sound.min.js"></script>-->
 </head>
 <style>
     #0{
@@ -17,12 +17,61 @@
         width: 50%;
         float: right;
     }
+
+    .sensor-div{
+        width: calc(100vw / 9);
+        height: calc(100vw / 9);
+        border: solid;
+        display: inline-block;
+    }
+
+    .active{
+        background-color: red;
+    }
+
+    #visualizer-01, #visualizer-02{
+        margin-top: 12px;
+    }
+
+    .sensor-desc{
+        display: inline-block;
+        width: calc(100vw/9);
+        margin-right: 3px;
+    }
 </style>
 <body>
     <button onclick="startAudio()">Start Audio</button>
 	<button onclick="devices.push(new BluetoothDevice(0, feather1))">Connect Feather 1</button>
 	<button onclick="devices.push(new BluetoothDevice(1, feather1))">Connect Feather 2</button>
 
+    <!--
+    Index of sensing area to melody:
+
+    0: Left Back
+    1: Left Sleeve
+    2: Lower Left Front
+    3: Upper Left Front
+    4: Upper Right Front
+    5: Lower Right Front
+    6: Right Sleeve
+    7: Right back
+    -->
+    <div id="sensor-loc">
+        <p class="sensor-desc">Left Back</p>
+        <p class="sensor-desc">Left Sleeve</p>
+        <p class="sensor-desc">Lower Left Front</p>
+        <p class="sensor-desc">Upper Left Front</p>
+        <p class="sensor-desc">Upper Right Front</p>
+        <p class="sensor-desc">Lower Right Front</p>
+        <p class="sensor-desc">Right Sleeve</p>
+        <p class="sensor-desc">Right Back</p>
+    </div>
+    <div id="visualizer-01">
+    </div>
+    <div id="visualizer-02">
+    </div>
+    <div id="beats-playing"></div>
+    <div id="bluetooth-msg"></div>
     <script src="js/AudioNode.js"></script>
     <script src="js/bluetoothConnect.js"></script>
     <script src="js/main.js"></script>
