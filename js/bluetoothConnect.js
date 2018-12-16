@@ -10,78 +10,12 @@ let feather1 = {
 	optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']
 };
 
-let feather2 = {
-	filters: [{
-		name: "Adafruit Bluefruit LE"
-	}],
-    optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']
-};
-
-//let optionalServices = 0x1800;
-
-// function makeConnection1(){
-// 	navigator.bluetooth.requestDevice(options).then(device => {
-// 		myDevice = device;
-// 		// console.log(device);
-// 		console.log(device.name);
-// 		document.getElementById('msg').append(device.name + ' connecting to GATT server...');
-// 		console.log('Connecting to GATT server...');
-// 		return device.gatt.connect();
-// 	}).then(server => {
-// 		document.getElementById('msg').append("getting service...");
-// 		console.log("getting service...");
-// 		return server.getPrimaryService(options.optionalServices);
-// 	}).then(service => {
-// 		document.getElementById('msg').append("getting characteristic...");
-// 		console.log("getting characteristic...");
-// 		return service.getCharacteristic(tx);
-// 	}).then(characteristic => {
-// 		document.getElementById('msg').append("connected to characterstic...");
-// 		console.log(characteristic);
-// 		deviceCharacteristic = characteristic;
-// 		// loadSound();
-// 		return deviceCharacteristic.startNotifications().then(_ => {
-// 			document.getElementById('msg').append("> notifications started...");
-// 			console.log('> notifications started...');
-// 			deviceCharacteristic.addEventListener('characteristicvaluechanged', function(event){
-// 				  let value = event.target.value;
-//
-// 				  dataIn = [];
-//
-// 				  for(let i = 0; i < value.byteLength; i++){
-// 				  	let currentValue = String.fromCharCode(value.getUint8(i));
-// 				  	dataIn.push(currentValue);
-// 				  }
-//
-// 				  triggerSound(dataIn);
-//
-// 				  //console.log(value);
-//
-//                   //
-// 				  // for (let i = 0; i < value.byteLength; i++) {
-// 				  // 	let currentValue = String.fromCharCode(value.getUint8(i));
-//                   //
-// 				  // 	if(currentValue == 'a'){
-// 					// 	dataIn = [];
-// 				  // 	}else if(currentValue == '1' || currentValue == '0'){
-// 				  // 		dataIn.push(value.getUint8(i));
-// 				  // 	}
-// 				  //
-// 				  // }
-// 				  // if(dataIn.length == 12){
-// 				  // 	//console.log(dataIn);
-// 				  // 	//document.getElementById('msg').append(dataIn);
-// 					//   triggerSound(dataIn);
-// 				  // }
-//
-// 				  //console.log('> ' + a.join(' '));
-// 			})
-// 		});
-// 	})
-// 	.catch(function(error) {
-// 	  console.log("Something went wrong. " + error);
-// 	});
-// }
+// let feather2 = {
+// 	filters: [{
+// 		name: "Adafruit Bluefruit LE"
+// 	}],
+//     optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']
+// };
 
 class BluetoothDevice{
 
@@ -138,26 +72,6 @@ class BluetoothDevice{
                         triggerSound(this.id, this.dataIn);
                     }
 
-                    //console.log(value);
-
-                    //
-                    // for (let i = 0; i < value.byteLength; i++) {
-                    // 	let currentValue = String.fromCharCode(value.getUint8(i));
-                    //
-                    // 	if(currentValue == 'a'){
-                    // 	dataIn = [];
-                    // 	}else if(currentValue == '1' || currentValue == '0'){
-                    // 		dataIn.push(value.getUint8(i));
-                    // 	}
-                    //
-                    // }
-                    // if(dataIn.length == 12){
-                    // 	//console.log(dataIn);
-                    // 	//document.getElementById('msg').append(dataIn);
-                    //   triggerSound(dataIn);
-                    // }
-
-                    //console.log('> ' + a.join(' '));
                 }.bind(this))
             });
         }).catch(function(error) {

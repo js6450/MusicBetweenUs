@@ -15,6 +15,20 @@ function loadSound(){
         beats.push(new AudioNode("b" + i));
     }
 
+    /*
+    Index of sensing area to melody:
+
+    0: Left Back
+    1: Left Sleeve
+    2: Lower Left Front
+    3: Upper Left Front
+    4: Upper Right Front
+    5: Lower Right Front
+    6: Right Sleeve
+    7: Right back
+
+    */
+
     for(let i = 0; i < melodiesTotal; i++){
         melodies.push(new AudioNode("m" + i));
     }
@@ -71,6 +85,13 @@ function triggerSound(id, data){
         console.log('incoming from ' + id + ": " + data);
 
         for(let i = 0; i < data.length; i++){
+            /*
+            values of data[i]: 0 - 7
+            if Device id = 0:
+                currentData: 0, 2, 4, 6, 8, 10, 12, 14
+            if Device id = 1:
+                currentData: 1, 3, 5, 7, 9, 11, 13, 15
+            */
             let currentData = parseInt(data[i]) * 2 + id;
 
             if(currentData < melodiesTotal){
@@ -86,13 +107,6 @@ function triggerSound(id, data){
 
                     currentAudio.jump(0, currentAudio.duration());
                 }
-                // currentAudio.jump(0, 5);
-
-                // if(currentAudio.currentTime > 5){
-                //     currentAudio.currentTime = 0;
-                // }
-
-                //currentAudio.play();
 
             }
         }
